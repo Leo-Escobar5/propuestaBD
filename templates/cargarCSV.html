@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Subir archivo CSV</h1>
+  <form method="POST" enctype="multipart/form-data">
+    <input type="file" name="csv_file">
+    <input type="submit" value="Cargar">
+  </form>
+
+  {% if data is not none %}
+    <hr>
+    <h1>Datos limpios</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          {% for col in data.columns %}
+            <th>{{ col }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for index, row in data.iterrows() %}
+          <tr>
+            {% for col in data.columns %}
+              <td>{{ row[col] }}</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <form method="POST" action="{{ url_for('cargarCSV.descargarCSV') }}">
+        <input type="hidden" name="data" value="{{ data.to_csv(index=False) }}">
+        <button type="submit" class="btn btn-primary">Descargar CSV</button>
+    </form>
+  {% endif %}
+{% include 'datos.html' %}
+
+{% endblock %}
+
